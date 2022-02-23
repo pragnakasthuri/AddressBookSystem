@@ -1,6 +1,9 @@
 package com.bridgelabz;
 
 public class Contact {
+    /**
+     * Declaring the variables for the details of a contact
+     */
     private String firstName;
     private String lastName;
     private String address;
@@ -9,6 +12,33 @@ public class Contact {
     private long zip;
     private long phoneNumber;
     private String email;
+
+    /**
+     * @param firstName
+     * @param lastName
+     * @param address
+     * @param city
+     * @param state
+     * @param zip
+     * @param phoneNumber
+     * @param email
+     */
+    Contact(String firstName, String lastName, String address, String city,
+            String state, long zip, long phoneNumber, String email){
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.address = address;
+        this.city = city;
+        this.state = state;
+        this.zip = zip;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+    }
+
+    /**
+     * creating getter and setter methods for each variable
+     * @return
+     */
 
     public String getFirstName() {
         return firstName;
