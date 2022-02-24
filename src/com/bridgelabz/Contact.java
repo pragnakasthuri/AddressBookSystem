@@ -105,6 +105,14 @@ public class Contact {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Contact contact = (Contact) o;
+        return this.firstName.equals(contact.getFirstName());
+    }
+
+    @Override
     public String toString() {
         return "Contact{" +
                 "firstName='" + firstName + '\'' +
