@@ -7,6 +7,7 @@ package com.bridgelabz;
  */
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class AddressBook {
     /**
@@ -83,7 +84,7 @@ public class AddressBook {
      */
     private static void readUserInput(Scanner scanner) {
         System.out.println("Please select one option");
-        System.out.println("1. Create new contact \n2. Edit contact \n3. List contacts \n4. Delete contact ");
+        System.out.println("1. Create new contact \n2. Edit contact \n3. List contacts \n4. Delete contact \n5.Search Contact ");
         int userChoice = scanner.nextInt();
         switch (userChoice) {
             case 1:
@@ -98,6 +99,9 @@ public class AddressBook {
                 break;
             case 4:
                 deleteContact();
+                break;
+            case 5:
+                searchContact();
                 break;
             default:
                 System.out.println("Invalid option. Please select valid");
@@ -197,5 +201,16 @@ public class AddressBook {
             }
             listContacts();
         }
+    }
+
+    /**
+     * Creating a searchContact method to search a contact by city or state name and print the list
+     */
+    private static void searchContact() {
+        System.out.println("Enter city or state name to search:");
+        String inputName = scanner.next();
+        addressBook.keySet().stream().forEach(contactType ->
+                        addressBook.get(contactType).stream().filter(contact -> (contact.getCity().equals(inputName) ||
+                        contact.getState().equals(inputName))).forEach(System.out::print));
     }
 }
