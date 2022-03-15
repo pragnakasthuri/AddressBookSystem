@@ -1,5 +1,12 @@
 package com.bridgelabz;
 
+/**
+ * Ability to ensure there is no Duplicate Entry of the same Person in a particular Address Book
+ * Duplicate Check is done on Person Name while adding person to Address Book.
+ * Use Collection Methods to Search Person by Name for Duplicate Entry
+ * Override equals method to check for Duplicate
+ */
+
 public class Contact {
     /**
      * Declaring the variables for the details of a contact
@@ -14,6 +21,7 @@ public class Contact {
     private String email;
 
     /**
+     * Creating a parameterised constructor to take all the below params
      * @param firstName
      * @param lastName
      * @param address
@@ -37,7 +45,6 @@ public class Contact {
 
     /**
      * creating getter and setter methods for each variable
-     * @return
      */
 
     public String getFirstName() {
@@ -104,13 +111,24 @@ public class Contact {
         this.email = email;
     }
 
+    /**
+     * Overriding equals method for comparing the first name
+     * @param o - of type Object
+     * @return true or false
+     */
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Contact contact = (Contact) o;
-        return this.firstName.equals(contact.getFirstName());
+        return this.firstName.equalsIgnoreCase(contact.getFirstName());
     }
+
+    /**
+     * Overriding toString method to print the list in a format
+     * @return - list
+     */
 
     @Override
     public String toString() {

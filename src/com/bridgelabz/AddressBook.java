@@ -1,26 +1,34 @@
-/**
- * Ability to add multiple address book to the system
- */
-
 package com.bridgelabz;
+/**
+ * Ability to ensure there is no Duplicate Entry of the same Person in a particular Address Book
+ * Duplicate Check is done on Person Name while adding person to Address Book.
+ * Use Collection Methods to Search Person by Name for Duplicate Entry
+ * Override equals method to check for Duplicate
+ */
 
 import java.util.*;
 
 public class AddressBook {
     /**
-     * Creating a list to store Contact Details
+     * Creating a scanner object to read inputs from user
      */
     private static Scanner scanner = new Scanner(System.in);
-
-    private  static Map<String, List<Contact>> addressBook = new HashMap<>();
     /**
-     * @param scanner Method to take user input to add details in contact
+     * Creating a Map object with String type as key and List type as value
+     */
+    private  static Map<String, List<Contact>> addressBook = new HashMap<>();
+
+    /**
+     * Creating addNewContact method to add contacts into list
+     * @param scanner - taking scanner object
      */
     public static void addNewContact(Scanner scanner) {
 
         System.out.println("Please enter the contact type  1.Office Contact\n2.Personal Contact");
         String contactType = scanner.nextInt() == 1 ? "Office" : "Personal";
-
+        /**
+         * Taking all the address book inputs from user and storing them in respective fields as below
+         */
         System.out.println("Please enter the details :");
         System.out.println("First Name :");
         String firstName = scanner.next();
@@ -39,15 +47,23 @@ public class AddressBook {
         System.out.println("Email :");
         String email = scanner.next();
 
+        /**
+         * Creating Contact object and passing all the details as params
+         */
         Contact contact = new Contact(firstName, lastName, address, city, state, zip, phoneNumber, email);
         List<Contact> tempContactList = null;
-        if (addressBook.get(contactType) == null) { // if there is no existing entry for given contacttype
+        /**
+         * If there is no existing entry for given contact type then create new array list
+         */
+        if (addressBook.get(contactType) == null) {
             tempContactList = new ArrayList<>();
         } else{
             tempContactList = addressBook.get(contactType);
         }
-        tempContactList.add(contact);
-        addressBook.put(contactType, tempContactList);
+        if (!tempContactList.contains(contact)) {
+            tempContactList.add(contact);
+            addressBook.put(contactType, tempContactList);
+        }
     }
 
     public static void main(String[] args) {
@@ -57,12 +73,12 @@ public class AddressBook {
             readUserInput(scanner);
             System.out.println("Do you want to continue(Y/N) ?");
             userChoice = scanner.next();
-        } while (userChoice.equals("Y"));
+        } while (userChoice.equalsIgnoreCase("Y"));
         System.out.println("Thank you!");
     }
 
     /**
-     * @param scanner
+     * @param scanner - taking scanner object
      * Method for giving the user to select he option and perform acc to it
      */
     private static void readUserInput(Scanner scanner) {
@@ -89,7 +105,7 @@ public class AddressBook {
     }
 
     /**
-     * Method for deleting the contact for the given name
+     * Method for deleting the contact for the given name as input
      */
     private static void deleteContact() {
         System.out.println("Please enter the contact type  1.Office Contact\n2.Personal Contact");
@@ -110,7 +126,7 @@ public class AddressBook {
         }
     }
     /**
-     * Display the list
+     * Displaying the list
      */
     private static void listContacts () {
         for(Map.Entry<String, List<Contact>> entry : addressBook.entrySet()) {
