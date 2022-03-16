@@ -1,26 +1,37 @@
-/**
- * Ability to add multiple address book to the system
- */
-
 package com.bridgelabz;
+/**
+ * Ability to get number of contact persons i.e. count by City or State
+ */
 
 import java.util.*;
 
 public class AddressBook {
     /**
-     * Creating a list to store Contact Details
+     * Creating a scanner object to read inputs from user
      */
     private static Scanner scanner = new Scanner(System.in);
-
-    private  static Map<String, List<Contact>> addressBook = new HashMap<>();
     /**
-     * @param scanner Method to take user input to add details in contact
+     * Creating a Map object with String type as key and List type as value
+     */
+    private static Map<String, List<Contact>> addressBook = new HashMap<>();
+
+    /**
+     * Creating a map object to store city or state as key and  contacts as list
+     */
+    private static Map<String, List<Contact>> cityStateContacts = new HashMap<>();
+
+
+    /**
+     * Creating addNewContact method to add contacts into list
+     * @param scanner - taking scanner object
      */
     public static void addNewContact(Scanner scanner) {
 
         System.out.println("Please enter the contact type  1.Office Contact\n2.Personal Contact");
         String contactType = scanner.nextInt() == 1 ? "Office" : "Personal";
-
+        /**
+         * Taking all the address book inputs from user and storing them in respective fields as below
+         */
         System.out.println("Please enter the details :");
         System.out.println("First Name :");
         String firstName = scanner.next();
@@ -39,15 +50,19 @@ public class AddressBook {
         System.out.println("Email :");
         String email = scanner.next();
 
+        /**
+         * Creating Contact object and passing all the details as params
+         */
         Contact contact = new Contact(firstName, lastName, address, city, state, zip, phoneNumber, email);
-        List<Contact> tempContactList = null;
-        if (addressBook.get(contactType) == null) { // if there is no existing entry for given contacttype
-            tempContactList = new ArrayList<>();
-        } else{
-            tempContactList = addressBook.get(contactType);
+        /**
+         * If there is no existing entry for given contact type then create new array list
+         */
+        if (addressBook.get(contactType) == null) {
+            addressBook.put(contactType, new ArrayList<>());
         }
-        tempContactList.add(contact);
-        addressBook.put(contactType, tempContactList);
+        if (!addressBook.get(contactType).contains(contact)) {
+            addressBook.get(contactType).add(contact);
+        }
     }
 
     public static void main(String[] args) {
@@ -57,17 +72,18 @@ public class AddressBook {
             readUserInput(scanner);
             System.out.println("Do you want to continue(Y/N) ?");
             userChoice = scanner.next();
-        } while (userChoice.equals("Y"));
+        } while (userChoice.equalsIgnoreCase("Y"));
         System.out.println("Thank you!");
     }
 
     /**
-     * @param scanner
+     * @param scanner - taking scanner object
      * Method for giving the user to select he option and perform acc to it
      */
     private static void readUserInput(Scanner scanner) {
         System.out.println("Please select one option");
-        System.out.println("1. Create new contact \n2. Edit contact \n3. List contacts \n4. Delete contact ");
+        System.out.println("1. Create new contact \n2. Edit contact \n3. List contacts \n4. " +
+                           "Delete contact \n5. Search Contact \n6. View Contact \n7. CountNumberOfContacts");
         int userChoice = scanner.nextInt();
         switch (userChoice) {
             case 1:
@@ -83,13 +99,22 @@ public class AddressBook {
             case 4:
                 deleteContact();
                 break;
+            case 5:
+                searchContact();
+                break;
+            case 6:
+                viewContact();
+                break;
+            case 7:
+                countNumberOfContacts();
+                break;
             default:
                 System.out.println("Invalid option. Please select valid");
         }
     }
 
     /**
-     * Method for deleting the contact for the given name
+     * Method for deleting the contact for the given name as input
      */
     private static void deleteContact() {
         System.out.println("Please enter the contact type  1.Office Contact\n2.Personal Contact");
@@ -110,7 +135,7 @@ public class AddressBook {
         }
     }
     /**
-     * Display the list
+     * Displaying the list
      */
     private static void listContacts () {
         for(Map.Entry<String, List<Contact>> entry : addressBook.entrySet()) {
@@ -182,4 +207,58 @@ public class AddressBook {
             listContacts();
         }
     }
+
+    /**
+     * Creating a searchContact method to search a contact by city or state name and print the list
+     */
+    private static void searchContact() {
+        System.out.println("Enter city or state name to search: ");
+        String inputName = scanner.next();
+
+        addressBook.keySet().stream().forEach(contactType ->
+                        addressBook.get(contactType).stream().filter(contact -> (contact.getCity().equals(inputName) ||
+                        contact.getState().equals(inputName))).forEach(System.out::print));
+    }
+
+    /**
+     * Creating a viewContact method to provide ability to view Persons by City or State
+     */
+    private static void viewContact() {
+        System.out.println("Please enter the name of city or state you want to view: ");
+        String cityOrState = scanner.next();
+
+        addressBook.keySet().stream().forEach(contactType -> {
+            addressBook.get(contactType).stream().forEach(contact -> {
+
+                if (cityStateContacts.get(contact.getCity()) == null) {
+                    cityStateContacts.put(contact.getCity(), new ArrayList<>());
+                }
+                cityStateContacts.get(contact.getCity()).add(contact);
+
+                if (cityStateContacts.get(contact.getState()) == null) {
+                    cityStateContacts.put(contact.getState(), new ArrayList<>());
+                }
+                cityStateContacts.get(contact.getState()).add(contact);
+
+            });
+        });
+
+        cityStateContacts.get(cityOrState).stream().forEach(System.out::println);
+    }
+
+    /**
+     * Creating countNumberOfContacts method to count the contact for given state or city
+     */
+   private static void countNumberOfContacts() {
+        if (cityStateContacts == null || cityStateContacts.isEmpty()) {
+            viewContact();
+        }
+        System.out.println("Please enter the name of city or state you want to count: ");
+        String cityOrState = scanner.next();
+        List<Contact> contactList = cityStateContacts.get(cityOrState);
+        System.out.println(contactList != null ? contactList.size() : "Invalid state or city");
+    }
 }
+
+
+

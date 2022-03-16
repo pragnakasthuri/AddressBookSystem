@@ -1,5 +1,9 @@
 package com.bridgelabz;
 
+/**
+ * Ability to get number of contact persons i.e. count by City or State
+ */
+
 public class Contact {
     /**
      * Declaring the variables for the details of a contact
@@ -14,6 +18,7 @@ public class Contact {
     private String email;
 
     /**
+     * Creating a parameterised constructor to take all the below params
      * @param firstName
      * @param lastName
      * @param address
@@ -37,7 +42,6 @@ public class Contact {
 
     /**
      * creating getter and setter methods for each variable
-     * @return
      */
 
     public String getFirstName() {
@@ -104,13 +108,24 @@ public class Contact {
         this.email = email;
     }
 
+    /**
+     * Overriding equals method for comparing the first name
+     * @param o - of type Object
+     * @return true or false
+     */
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Contact contact = (Contact) o;
-        return this.firstName.equals(contact.getFirstName());
+        return this.firstName.equalsIgnoreCase(contact.getFirstName());
     }
+
+    /**
+     * Overriding toString method to print the list in a format
+     * @return - list
+     */
 
     @Override
     public String toString() {
