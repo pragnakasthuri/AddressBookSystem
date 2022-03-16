@@ -1,9 +1,6 @@
 package com.bridgelabz;
 /**
- * Ability to ensure there is no Duplicate Entry of the same Person in a particular Address Book
- * Duplicate Check is done on Person Name while adding person to Address Book.
- * Use Collection Methods to Search Person by Name for Duplicate Entry
- * Override equals method to check for Duplicate
+ * Ability to view persons by city or state
  */
 
 import java.util.*;
@@ -17,7 +14,7 @@ public class AddressBook {
     /**
      * Creating a Map object with String type as key and List type as value
      */
-    private  static Map<String, List<Contact>> addressBook = new HashMap<>();
+    private static Map<String, List<Contact>> addressBook = new HashMap<>();
 
     /**
      * Creating addNewContact method to add contacts into list
@@ -52,18 +49,14 @@ public class AddressBook {
          * Creating Contact object and passing all the details as params
          */
         Contact contact = new Contact(firstName, lastName, address, city, state, zip, phoneNumber, email);
-        List<Contact> tempContactList = null;
         /**
          * If there is no existing entry for given contact type then create new array list
          */
         if (addressBook.get(contactType) == null) {
-            tempContactList = new ArrayList<>();
-        } else{
-            tempContactList = addressBook.get(contactType);
+            addressBook.put(contactType, new ArrayList<>());
         }
-        if (!tempContactList.contains(contact)) {
-            tempContactList.add(contact);
-            addressBook.put(contactType, tempContactList);
+        if (!addressBook.get(contactType).contains(contact)) {
+            addressBook.get(contactType).add(contact);
         }
     }
 
@@ -84,7 +77,7 @@ public class AddressBook {
      */
     private static void readUserInput(Scanner scanner) {
         System.out.println("Please select one option");
-        System.out.println("1. Create new contact \n2. Edit contact \n3. List contacts \n4. Delete contact \n5.Search Contact ");
+        System.out.println("1. Create new contact \n2. Edit contact \n3. List contacts \n4. Delete contact \n5. Search Contact \n6. View Contact");
         int userChoice = scanner.nextInt();
         switch (userChoice) {
             case 1:
@@ -102,6 +95,9 @@ public class AddressBook {
                 break;
             case 5:
                 searchContact();
+                break;
+            case 6:
+                viewContact();
                 break;
             default:
                 System.out.println("Invalid option. Please select valid");
@@ -207,10 +203,38 @@ public class AddressBook {
      * Creating a searchContact method to search a contact by city or state name and print the list
      */
     private static void searchContact() {
-        System.out.println("Enter city or state name to search:");
+        System.out.println("Enter city or state name to search: ");
         String inputName = scanner.next();
+
         addressBook.keySet().stream().forEach(contactType ->
                         addressBook.get(contactType).stream().filter(contact -> (contact.getCity().equals(inputName) ||
                         contact.getState().equals(inputName))).forEach(System.out::print));
+    }
+
+    /**
+     * Creating a viewContact method to provide ability to view Persons by City or State
+     */
+    private static void viewContact() {
+        Map<String, List<Contact>> cityStateContacts = new HashMap<>();
+        System.out.println("Please enter the name of city or state you want to view: ");
+        String cityOrState = scanner.next();
+
+        addressBook.keySet().stream().forEach(contactType -> {
+            addressBook.get(contactType).stream().forEach(contact -> {
+
+                if (cityStateContacts.get(contact.getCity()) == null) {
+                    cityStateContacts.put(contact.getCity(), new ArrayList<>());
+                }
+                cityStateContacts.get(contact.getCity()).add(contact);
+
+                if (cityStateContacts.get(contact.getState()) == null) {
+                    cityStateContacts.put(contact.getState(), new ArrayList<>());
+                }
+                cityStateContacts.get(contact.getState()).add(contact);
+
+            });
+        });
+
+        cityStateContacts.get(cityOrState).stream().forEach(System.out::println);
     }
 }
