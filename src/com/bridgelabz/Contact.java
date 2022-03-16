@@ -1,7 +1,7 @@
 package com.bridgelabz;
 
 /**
- * Ability to view persons by city or state
+ * Ability to get number of contact persons i.e. count by City or State
  */
 
 public class Contact {

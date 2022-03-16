@@ -1,10 +1,9 @@
 package com.bridgelabz;
 /**
- * Ability to view persons by city or state
+ * Ability to get number of contact persons i.e. count by City or State
  */
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class AddressBook {
     /**
@@ -15,6 +14,12 @@ public class AddressBook {
      * Creating a Map object with String type as key and List type as value
      */
     private static Map<String, List<Contact>> addressBook = new HashMap<>();
+
+    /**
+     * Creating a map object to store city or state as key and  contacts as list
+     */
+    private static Map<String, List<Contact>> cityStateContacts = new HashMap<>();
+
 
     /**
      * Creating addNewContact method to add contacts into list
@@ -77,7 +82,8 @@ public class AddressBook {
      */
     private static void readUserInput(Scanner scanner) {
         System.out.println("Please select one option");
-        System.out.println("1. Create new contact \n2. Edit contact \n3. List contacts \n4. Delete contact \n5. Search Contact \n6. View Contact");
+        System.out.println("1. Create new contact \n2. Edit contact \n3. List contacts \n4. " +
+                           "Delete contact \n5. Search Contact \n6. View Contact \n7. CountNumberOfContacts");
         int userChoice = scanner.nextInt();
         switch (userChoice) {
             case 1:
@@ -98,6 +104,9 @@ public class AddressBook {
                 break;
             case 6:
                 viewContact();
+                break;
+            case 7:
+                countNumberOfContacts();
                 break;
             default:
                 System.out.println("Invalid option. Please select valid");
@@ -215,7 +224,6 @@ public class AddressBook {
      * Creating a viewContact method to provide ability to view Persons by City or State
      */
     private static void viewContact() {
-        Map<String, List<Contact>> cityStateContacts = new HashMap<>();
         System.out.println("Please enter the name of city or state you want to view: ");
         String cityOrState = scanner.next();
 
@@ -237,4 +245,20 @@ public class AddressBook {
 
         cityStateContacts.get(cityOrState).stream().forEach(System.out::println);
     }
+
+    /**
+     * Creating countNumberOfContacts method to count the contact for given state or city
+     */
+   private static void countNumberOfContacts() {
+        if (cityStateContacts == null || cityStateContacts.isEmpty()) {
+            viewContact();
+        }
+        System.out.println("Please enter the name of city or state you want to count: ");
+        String cityOrState = scanner.next();
+        List<Contact> contactList = cityStateContacts.get(cityOrState);
+        System.out.println(contactList != null ? contactList.size() : "Invalid state or city");
+    }
 }
+
+
+
