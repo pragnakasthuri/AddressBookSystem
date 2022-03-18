@@ -1,7 +1,8 @@
 package com.bridgelabz;
 
 /**
- * Ability to get number of contact persons i.e. count by City or State
+ * Creating a Contact class which contain all the details like first name,last name,phone number and so on
+ * Containing all the getter and setter methods
  */
 
 public class Contact {
