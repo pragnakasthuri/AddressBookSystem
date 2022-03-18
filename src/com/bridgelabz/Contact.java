@@ -1,7 +1,8 @@
 package com.bridgelabz;
 
 /**
- * Ability to sort the entries in the address book alphabetically by person's name
+ * Creating a Contact class which contain all the details like first name,last name,phone number and so on
+ * Containing all the getter and setter methods
  */
 
 public class Contact {
