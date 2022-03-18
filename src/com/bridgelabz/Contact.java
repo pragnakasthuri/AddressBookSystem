@@ -1,7 +1,7 @@
 package com.bridgelabz;
 
 /**
- * Ability to get number of contact persons i.e. count by City or State
+ * Ability to sort the entries in the address book alphabetically by person's name
  */
 
 public class Contact {

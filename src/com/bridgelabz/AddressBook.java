@@ -1,6 +1,6 @@
 package com.bridgelabz;
 /**
- * Ability to get number of contact persons i.e. count by City or State
+ * Ability to sort the entries in the address book alphabetically by person's name
  */
 
 import java.util.*;
@@ -83,7 +83,7 @@ public class AddressBook {
     private static void readUserInput(Scanner scanner) {
         System.out.println("Please select one option");
         System.out.println("1. Create new contact \n2. Edit contact \n3. List contacts \n4. " +
-                           "Delete contact \n5. Search Contact \n6. View Contact \n7. CountNumberOfContacts");
+                           "Delete contact \n5. Search Contact \n6. View Contact \n7. CountNumberOfContacts \n8.Sort Address Book by Name ");
         int userChoice = scanner.nextInt();
         switch (userChoice) {
             case 1:
@@ -107,6 +107,9 @@ public class AddressBook {
                 break;
             case 7:
                 countNumberOfContacts();
+                break;
+            case 8:
+                sortAddressBookByName();
                 break;
             default:
                 System.out.println("Invalid option. Please select valid");
@@ -257,6 +260,16 @@ public class AddressBook {
         String cityOrState = scanner.next();
         List<Contact> contactList = cityStateContacts.get(cityOrState);
         System.out.println(contactList != null ? contactList.size() : "Invalid state or city");
+    }
+
+    /**
+     * Creating sortAddressBookByName to sort the entries in the address book alphabetically by person's first name
+     */
+    private static void sortAddressBookByName() {
+        System.out.println("Please enter the contact type  1.Office Contact\n2.Personal Contact");
+        String contactType = scanner.nextInt() == 1 ? "Office" : "Personal";
+
+        Collections.sort(addressBook.get(contactType), (a, b) -> a.getFirstName().compareTo(b.getFirstName()));
     }
 }
 
