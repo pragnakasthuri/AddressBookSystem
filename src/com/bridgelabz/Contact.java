@@ -129,15 +129,13 @@ public class Contact {
      */
     @Override
     public String toString() {
-        return "Contact{" +
-                "firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", address='" + address + '\'' +
-                ", city='" + city + '\'' +
-                ", state='" + state + '\'' +
-                ", zip=" + zip +
-                ", phoneNumber=" + phoneNumber +
-                ", email='" + email + '\'' +
-                '}';
+        return  "\tFirstName: " + firstName + '\n' +
+                "\tLastName: " + lastName + '\n' +
+                "\tAddress: " + address + '\n' +
+                "\tCity: " + city + '\n' +
+                "\tState: " + state + '\n' +
+                "\tZip: " + zip + '\n' +
+                "\tPhoneNumber: " + phoneNumber + '\n' +
+                "\tEmail: " + email + '\n' ;
     }
 }

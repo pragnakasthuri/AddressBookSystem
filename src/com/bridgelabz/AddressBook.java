@@ -82,7 +82,9 @@ public class AddressBook {
          */
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("AddressBook.txt"));
         for (Map.Entry<String, List<Contact>> entry : addressBook.entrySet()) {
-            bufferedWriter.write(entry.getKey() + ":" + entry.getValue());
+            bufferedWriter.write(entry.getKey() + "Contacts" + "\n");
+            for (Contact contact : entry.getValue())
+                bufferedWriter.write(String.valueOf(contact));
             bufferedWriter.newLine();
         }
         System.out.println("Contact has been saved successfully to a file");
@@ -199,7 +201,10 @@ public class AddressBook {
      */
     private static void listContacts() {
         for (Map.Entry<String, List<Contact>> entry : addressBook.entrySet()) {
-            System.out.println(entry.getKey() + "\n" + entry.getValue());
+            System.out.println(entry.getKey() + "Contacts" + "\n");
+            for(Contact contact : entry.getValue()) {
+                System.out.println(contact);
+            }
         }
     }
 
