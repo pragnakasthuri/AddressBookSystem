@@ -1,1 +1,20 @@
-Personal:[Contact{firstName='Pragna', lastName='Kasthuri', address='Lingampally', city='Hyderabad', state='Telangana', zip=500019, phoneNumber=901234556, email='kpragna25@gmail.com'}]
+OfficeContacts
+	FirstName: Pragna
+	LastName: Kasthuri
+	Address: Lingampally
+	City: Hyderabad
+	State: Telangana
+	Zip: 5000018
+	PhoneNumber: 901234567
+	Email: kpragna24@gmail.com
+
+PersonalContacts
+	FirstName: Aadhya
+	LastName: Adla
+	Address: Lingampally
+	City: Hyderabad
+	State: Telangana
+	Zip: 5000019
+	PhoneNumber: 809123456
+	Email: Aadhya@gmail.com
+
