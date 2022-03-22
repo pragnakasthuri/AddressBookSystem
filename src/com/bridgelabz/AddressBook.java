@@ -6,8 +6,10 @@ package com.bridgelabz;
  * Person in a particular address book,search Person in a City or State across the multiple AddressBook,view persons by
  * city or state, get number of contacts by city or state, sort the entries in address book alphabetically and
  * Ability to sort the entries in the address book by City, State, or Zip
+ * Ability to Read or Write the Address Book with Persons Contact into a File using File IO
  */
 
+import java.io.*;
 import java.util.*;
 
 public class AddressBook {
@@ -70,7 +72,45 @@ public class AddressBook {
         }
     }
 
-    public static void main(String[] args) {
+    /**
+     * Creating writeContactsToFile to write the person's contacts to a file
+     * @throws IOException
+     */
+    public static void writeContactsToFile() throws IOException {
+        /**
+         * Creating a BufferedWriter object
+         */
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("AddressBook.txt"));
+        for (Map.Entry<String, List<Contact>> entry : addressBook.entrySet()) {
+            bufferedWriter.write(entry.getKey() + ":" + entry.getValue());
+            bufferedWriter.newLine();
+        }
+        System.out.println("Contact has been saved successfully to a file");
+        bufferedWriter.flush();
+    }
+
+    /**
+     * Creating readContactsFromFile method to read person contacts from a file
+     * @throws IOException
+     */
+    public static void readContactsFromFile() throws IOException {
+        /**
+         * Creating a BufferedReader object
+         */
+        BufferedReader bufferedReader = new BufferedReader(new FileReader("AddressBook.txt"));
+        String file;
+        while ((file = bufferedReader.readLine()) != null) {
+            System.out.println(file);
+        }
+        bufferedReader.close();
+    }
+
+    /**
+     * Main method to perform modifications
+     * @param args - default java param
+     * @throws IOException
+     */
+    public static void main(String[] args) throws IOException {
         System.out.println("Welcome to Address Book program...!");
         String userChoice;
         do {
@@ -85,11 +125,12 @@ public class AddressBook {
      * @param scanner - taking scanner object
      * Method for giving the user to select he option and perform acc to it
      */
-    private static void readUserInput(Scanner scanner) {
+    private static void readUserInput(Scanner scanner) throws IOException {
         System.out.println("Please select one option");
-        System.out.println("1. Create new contact \n2. Edit contact \n3. List contacts \n4. " +
-                           "Delete contact \n5. Search Contact \n6. View Contact \n7. CountNumberOfContacts \n" +
-                            "8. Sort Address Book by Name \n9. Sort Address Book By City State Or Zip");
+        System.out.println("1. Create new contact \n2. Edit contact \n3. List contacts \n" +
+                "4. Delete contact \n5. Search Contact \n6. View Contact \n7. CountNumberOfContacts \n" +
+                "8. Sort Address Book by Name \n9. Sort Address Book By City State Or Zip \n" +
+                "10. Write Contacts To File \n11. Read Contacts From File");
         int userChoice = scanner.nextInt();
         switch (userChoice) {
             case 1:
@@ -120,6 +161,12 @@ public class AddressBook {
             case 9:
                 sortAddressBookByCityStateOrZip();
                 break;
+            case 10:
+                writeContactsToFile();
+                break;
+            case 11:
+                readContactsFromFile();
+                break;
             default:
                 System.out.println("Invalid option. Please select valid");
         }
@@ -146,19 +193,20 @@ public class AddressBook {
             }
         }
     }
+
     /**
      * Displaying the list
      */
-    private static void listContacts () {
-        for(Map.Entry<String, List<Contact>> entry : addressBook.entrySet()) {
-            System.out.println(entry.getKey()+"\n"+entry.getValue());
+    private static void listContacts() {
+        for (Map.Entry<String, List<Contact>> entry : addressBook.entrySet()) {
+            System.out.println(entry.getKey() + "\n" + entry.getValue());
         }
     }
 
     /**
      * This method is used to give the user edit option
      */
-    private static void editContact () {
+    private static void editContact() {
         System.out.println("Please enter the contact type  1.Office Contact\n2.Personal Contact");
         String contactType = scanner.nextInt() == 1 ? "Office" : "Personal";
         List<Contact> contactList = addressBook.get(contactType);
@@ -228,7 +276,7 @@ public class AddressBook {
         String inputName = scanner.next();
 
         addressBook.keySet().stream().forEach(contactType ->
-                        addressBook.get(contactType).stream().filter(contact -> (contact.getCity().equals(inputName) ||
+                addressBook.get(contactType).stream().filter(contact -> (contact.getCity().equals(inputName) ||
                         contact.getState().equals(inputName))).forEach(System.out::print));
     }
 
@@ -261,7 +309,7 @@ public class AddressBook {
     /**
      * Creating countNumberOfContacts method to count the contact for given state or city
      */
-   private static void countNumberOfContacts() {
+    private static void countNumberOfContacts() {
         if (cityStateContacts == null || cityStateContacts.isEmpty()) {
             viewContact();
         }

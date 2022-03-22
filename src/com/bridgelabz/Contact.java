@@ -125,9 +125,8 @@ public class Contact {
 
     /**
      * Overriding toString method to print the list in a format
-     * @return - list
+     * @return - list of contacts with details
      */
-
     @Override
     public String toString() {
         return "Contact{" +
