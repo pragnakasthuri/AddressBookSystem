@@ -9,6 +9,8 @@ package com.bridgelabz;
  * Ability to Read or Write the Address Book with Persons Contact into a File using File IO
  */
 
+import com.opencsv.CSVWriter;
+
 import java.io.*;
 import java.util.*;
 
@@ -108,6 +110,40 @@ public class AddressBook {
     }
 
     /**
+     * Creating writeContactsToCSVFile method to write the person's contact to AddressBook.csv file
+     * @throws IOException
+     */
+    public static void writeContactsToCSVFile() throws IOException {
+        File file = new File("AddressBook.csv");
+        FileWriter fileWriter = new FileWriter(file);
+        CSVWriter csvWriter = new CSVWriter(fileWriter, ',',
+                                            CSVWriter.NO_QUOTE_CHARACTER,
+                                            CSVWriter.DEFAULT_ESCAPE_CHARACTER,
+                                            CSVWriter.DEFAULT_LINE_END);
+        List<String[]> list = new ArrayList<>();
+        String[] header = {"First Name","Last Name", "Address", "City", "State", "Zip", "Phone Num", "Email"};
+        list.add(header);
+        for (Map.Entry<String, List<Contact>> entry : addressBook.entrySet()) {
+            List<String> data = null;
+
+            for(Contact contact : entry.getValue()) {
+                data = new ArrayList<>();
+                data.add(contact.getFirstName());
+                data.add(contact.getLastName());
+                data.add(contact.getAddress());
+                data.add(contact.getCity());
+                data.add(contact.getState());
+                data.add(String.valueOf(contact.getZip()));
+                data.add(String.valueOf(contact.getPhoneNumber()));
+                data.add(contact.getEmail());
+                list.add(data.toArray(new String[0]));
+            }
+        }
+        System.out.println("Contact has been saved successfully to CSV file");
+        csvWriter.writeAll(list);
+        csvWriter.close();
+    }
+    /**
      * Main method to perform modifications
      * @param args - default java param
      * @throws IOException
@@ -132,7 +168,7 @@ public class AddressBook {
         System.out.println("1. Create new contact \n2. Edit contact \n3. List contacts \n" +
                 "4. Delete contact \n5. Search Contact \n6. View Contact \n7. CountNumberOfContacts \n" +
                 "8. Sort Address Book by Name \n9. Sort Address Book By City State Or Zip \n" +
-                "10. Write Contacts To File \n11. Read Contacts From File");
+                "10. Write Contacts To File \n11. Read Contacts From File \n12. Write Contacts To CSVFile");
         int userChoice = scanner.nextInt();
         switch (userChoice) {
             case 1:
@@ -168,6 +204,9 @@ public class AddressBook {
                 break;
             case 11:
                 readContactsFromFile();
+                break;
+            case 12:
+                writeContactsToCSVFile();
                 break;
             default:
                 System.out.println("Invalid option. Please select valid");
