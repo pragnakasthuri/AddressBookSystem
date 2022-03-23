@@ -2,7 +2,7 @@ package com.bridgelabz;
 
 /**
  * Creating a Contact class which contain all the details like first name,last name,phone number and so on
- * Containing all the getter and setter methods
+ * Containing all the getter and setter methods for the variables
  */
 
 public class Contact {

@@ -7,9 +7,11 @@ package com.bridgelabz;
  * city or state, get number of contacts by city or state, sort the entries in address book alphabetically and
  * Ability to sort the entries in the address book by City, State, or Zip
  * Ability to Read or Write the Address Book with Persons Contact into a File using File IO
+ * Ability to Read or Write the Address Book with Persons Contact into a CSV File
  */
 
-import com.opencsv.CSVWriter;
+import com.opencsv.*;
+import com.opencsv.exceptions.CsvException;
 
 import java.io.*;
 import java.util.*;
@@ -143,12 +145,33 @@ public class AddressBook {
         csvWriter.writeAll(list);
         csvWriter.close();
     }
+
     /**
-     * Main method to perform modifications
-     * @param args - default java param
+     * Creating readContactsFromCSVFile to read person's contact details from CSV file
      * @throws IOException
+     * @throws CsvException
      */
-    public static void main(String[] args) throws IOException {
+    public static void readContactsFromCSVFile() throws IOException, CsvException {
+        FileReader fileReader = new FileReader("AddressBook.csv");
+        CSVParser parser = new CSVParserBuilder().withSeparator(',').build();
+
+        CSVReader csvReader = new CSVReaderBuilder(fileReader).withCSVParser(parser).build();
+
+        List<String[]> contacts = csvReader.readAll();
+
+        for (String[] row : contacts) {
+            for (String contact : row) {
+                System.out.println(contact + "\t");
+            }
+        }
+    }
+
+        /**
+         * Main method to perform modifications
+         * @param args - default java param
+         * @throws IOException
+         */
+    public static void main(String[] args) throws IOException, CsvException {
         System.out.println("Welcome to Address Book program...!");
         String userChoice;
         do {
@@ -163,12 +186,13 @@ public class AddressBook {
      * @param scanner - taking scanner object
      * Method for giving the user to select he option and perform acc to it
      */
-    private static void readUserInput(Scanner scanner) throws IOException {
+    private static void readUserInput(Scanner scanner) throws IOException, CsvException {
         System.out.println("Please select one option");
         System.out.println("1. Create new contact \n2. Edit contact \n3. List contacts \n" +
                 "4. Delete contact \n5. Search Contact \n6. View Contact \n7. CountNumberOfContacts \n" +
                 "8. Sort Address Book by Name \n9. Sort Address Book By City State Or Zip \n" +
-                "10. Write Contacts To File \n11. Read Contacts From File \n12. Write Contacts To CSVFile");
+                "10. Write Contacts To File \n11. Read Contacts From File \n12. Write Contacts To CSVFile \n" +
+                "13. Read Contacts From CSVFile");
         int userChoice = scanner.nextInt();
         switch (userChoice) {
             case 1:
@@ -207,6 +231,9 @@ public class AddressBook {
                 break;
             case 12:
                 writeContactsToCSVFile();
+                break;
+            case 13:
+                readContactsFromCSVFile();
                 break;
             default:
                 System.out.println("Invalid option. Please select valid");
