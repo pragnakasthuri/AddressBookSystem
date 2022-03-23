@@ -6,8 +6,21 @@ package com.bridgelabz;
  * Person in a particular address book,search Person in a City or State across the multiple AddressBook,view persons by
  * city or state, get number of contacts by city or state, sort the entries in address book alphabetically and
  * Ability to sort the entries in the address book by City, State, or Zip
+ * Ability to Read or Write the Address Book with Persons Contact into a File using File IO
+ * Ability to Read or Write the Address Book with Persons Contact into a CSV File
+ * Ability to Read or Write the Address Book with Persons Contact into a JSON File
  */
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.opencsv.*;
+import com.opencsv.exceptions.CsvException;
+
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class AddressBook {
@@ -70,7 +83,158 @@ public class AddressBook {
         }
     }
 
-    public static void main(String[] args) {
+    /**
+     * Creating writeContactsToFile to write the person's contacts to a file
+     * @throws IOException
+     */
+    public static void writeContactsToFile() throws IOException {
+        /**
+         * Creating a BufferedWriter object
+         */
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("AddressBook.txt"));
+        for (Map.Entry<String, List<Contact>> entry : addressBook.entrySet()) {
+            bufferedWriter.write(entry.getKey() + "Contacts" + "\n");
+            for (Contact contact : entry.getValue())
+                bufferedWriter.write(String.valueOf(contact));
+            bufferedWriter.newLine();
+        }
+        System.out.println("Contact has been saved successfully to a file");
+        bufferedWriter.flush();
+        bufferedWriter.close();
+    }
+
+    /**
+     * Creating readContactsFromFile method to read person contacts from a file
+     * @throws IOException
+     */
+    public static void readContactsFromFile() throws IOException {
+        /**
+         * Creating a BufferedReader object
+         */
+        BufferedReader bufferedReader = new BufferedReader(new FileReader("AddressBook.txt"));
+        String file;
+        while ((file = bufferedReader.readLine()) != null) {
+            System.out.println(file);
+        }
+        bufferedReader.close();
+    }
+
+    /**
+     * Creating writeContactsToCSVFile method to write the person's contact to AddressBook.csv file
+     * @throws IOException
+     */
+    public static void writeContactsToCSVFile() throws IOException {
+        File file = new File("AddressBook.csv");
+        FileWriter fileWriter = new FileWriter(file);
+        CSVWriter csvWriter = new CSVWriter(fileWriter, ',',
+                                            CSVWriter.NO_QUOTE_CHARACTER,
+                                            CSVWriter.DEFAULT_ESCAPE_CHARACTER,
+                                            CSVWriter.DEFAULT_LINE_END);
+        List<String[]> list = new ArrayList<>();
+        String[] header = {"First Name","Last Name", "Address", "City", "State", "Zip", "Phone Num", "Email"};
+        list.add(header);
+        for (Map.Entry<String, List<Contact>> entry : addressBook.entrySet()) {
+            List<String> data = null;
+
+            for(Contact contact : entry.getValue()) {
+                data = new ArrayList<>();
+                data.add(contact.getFirstName());
+                data.add(contact.getLastName());
+                data.add(contact.getAddress());
+                data.add(contact.getCity());
+                data.add(contact.getState());
+                data.add(String.valueOf(contact.getZip()));
+                data.add(String.valueOf(contact.getPhoneNumber()));
+                data.add(contact.getEmail());
+                list.add(data.toArray(new String[0]));
+            }
+        }
+        System.out.println("Contact has been saved successfully to CSV file");
+        csvWriter.writeAll(list);
+        csvWriter.close();
+        fileWriter.close();
+    }
+
+    /**
+     * Creating readContactsFromCSVFile to read person's contact details from CSV file
+     * @throws IOException
+     * @throws CsvException
+     */
+    public static void readContactsFromCSVFile() throws IOException, CsvException {
+        FileReader fileReader = new FileReader("AddressBook.csv");
+        CSVParser parser = new CSVParserBuilder().withSeparator(',').build();
+
+        CSVReader csvReader = new CSVReaderBuilder(fileReader).withCSVParser(parser).build();
+
+        List<String[]> contacts = csvReader.readAll();
+
+        for (String[] row : contacts) {
+            for (String contact : row) {
+                System.out.println(contact + "\t");
+            }
+        }
+        csvReader.close();
+        fileReader.close();
+    }
+
+    /**
+     * Creating writeContactsToJSONFile to write the person's contact details to a JSON file
+     * @throws IOException
+     */
+    public static void writeContactsToJSONFile() throws IOException {
+        JsonObject jsonObject = new JsonObject();
+        JsonObject jsonObject1 = null;
+        JsonArray jsonArray = null;
+        File file = new File("AddressBookJson.json");
+        file.createNewFile();
+        FileWriter fileWriter = new FileWriter(file);
+        for (Map.Entry<String, List<Contact>> entry : addressBook.entrySet()) {
+            jsonArray = new JsonArray();
+            for(Contact contact : entry.getValue()) {
+                jsonObject1 = new JsonObject();
+                jsonObject1.addProperty("First Name", contact.getFirstName());
+                jsonObject1.addProperty("Last Name", contact.getLastName());
+                jsonObject1.addProperty("Address", contact.getAddress());
+                jsonObject1.addProperty("City", contact.getCity());
+                jsonObject1.addProperty("State", contact.getState());
+                jsonObject1.addProperty("Zip", contact.getZip());
+                jsonObject1.addProperty("Phone Number", contact.getPhoneNumber());
+                jsonObject1.addProperty("Email", contact.getEmail());
+                jsonArray.add(jsonObject1);
+            }
+            jsonObject.add(entry.getKey(), jsonArray);
+        }
+        fileWriter.write(jsonObject.toString());
+        fileWriter.flush();
+        fileWriter.close();
+    }
+
+    /**
+     * This method is created to read the json file and print the data
+     */
+    public static void readContactsFromJSONFile() {
+        JsonParser parser = null;
+        try {
+            Gson gson = new Gson();
+            Reader reader = Files.newBufferedReader(Paths.get("AddressBookJson.json"));
+
+            Map<String, List<Contact>> map = gson.fromJson(reader, Map.class);
+
+            for (Map.Entry<String, List<Contact>> entry : map.entrySet()) {
+                System.out.println(entry.getKey() + "=" + entry.getValue());
+            }
+
+            reader.close();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+        /**
+         * Main method to perform modifications
+         * @param args - default java param
+         * @throws IOException
+         */
+    public static void main(String[] args) throws IOException, CsvException {
         System.out.println("Welcome to Address Book program...!");
         String userChoice;
         do {
@@ -85,11 +249,13 @@ public class AddressBook {
      * @param scanner - taking scanner object
      * Method for giving the user to select he option and perform acc to it
      */
-    private static void readUserInput(Scanner scanner) {
+    private static void readUserInput(Scanner scanner) throws IOException, CsvException {
         System.out.println("Please select one option");
-        System.out.println("1. Create new contact \n2. Edit contact \n3. List contacts \n4. " +
-                           "Delete contact \n5. Search Contact \n6. View Contact \n7. CountNumberOfContacts \n" +
-                            "8. Sort Address Book by Name \n9. Sort Address Book By City State Or Zip");
+        System.out.println("1. Create new contact \n2. Edit contact \n3. List contacts \n" +
+                "4. Delete contact \n5. Search Contact \n6. View Contact \n7. CountNumberOfContacts \n" +
+                "8. Sort Address Book by Name \n9. Sort Address Book By City State Or Zip \n" +
+                "10. Write Contacts To File \n11. Read Contacts From File \n12. Write Contacts To CSVFile \n" +
+                "13. Read Contacts From CSVFile\n14. Write Contacts To JSONFile\n15. Read Contacts From JSONFile");
         int userChoice = scanner.nextInt();
         switch (userChoice) {
             case 1:
@@ -120,6 +286,23 @@ public class AddressBook {
             case 9:
                 sortAddressBookByCityStateOrZip();
                 break;
+            case 10:
+                writeContactsToFile();
+                break;
+            case 11:
+                readContactsFromFile();
+                break;
+            case 12:
+                writeContactsToCSVFile();
+                break;
+            case 13:
+                readContactsFromCSVFile();
+                break;
+            case 14:
+                writeContactsToJSONFile();
+                break;
+            case 15:
+                readContactsFromJSONFile();
             default:
                 System.out.println("Invalid option. Please select valid");
         }
@@ -146,19 +329,23 @@ public class AddressBook {
             }
         }
     }
+
     /**
      * Displaying the list
      */
-    private static void listContacts () {
-        for(Map.Entry<String, List<Contact>> entry : addressBook.entrySet()) {
-            System.out.println(entry.getKey()+"\n"+entry.getValue());
+    private static void listContacts() {
+        for (Map.Entry<String, List<Contact>> entry : addressBook.entrySet()) {
+            System.out.println(entry.getKey() + "Contacts" + "\n");
+            for(Contact contact : entry.getValue()) {
+                System.out.println(contact);
+            }
         }
     }
 
     /**
      * This method is used to give the user edit option
      */
-    private static void editContact () {
+    private static void editContact() {
         System.out.println("Please enter the contact type  1.Office Contact\n2.Personal Contact");
         String contactType = scanner.nextInt() == 1 ? "Office" : "Personal";
         List<Contact> contactList = addressBook.get(contactType);
@@ -228,7 +415,7 @@ public class AddressBook {
         String inputName = scanner.next();
 
         addressBook.keySet().stream().forEach(contactType ->
-                        addressBook.get(contactType).stream().filter(contact -> (contact.getCity().equals(inputName) ||
+                addressBook.get(contactType).stream().filter(contact -> (contact.getCity().equals(inputName) ||
                         contact.getState().equals(inputName))).forEach(System.out::print));
     }
 
@@ -261,7 +448,7 @@ public class AddressBook {
     /**
      * Creating countNumberOfContacts method to count the contact for given state or city
      */
-   private static void countNumberOfContacts() {
+    private static void countNumberOfContacts() {
         if (cityStateContacts == null || cityStateContacts.isEmpty()) {
             viewContact();
         }

@@ -2,7 +2,7 @@ package com.bridgelabz;
 
 /**
  * Creating a Contact class which contain all the details like first name,last name,phone number and so on
- * Containing all the getter and setter methods
+ * Containing all the getter and setter methods for the variables
  */
 
 public class Contact {
@@ -125,20 +125,17 @@ public class Contact {
 
     /**
      * Overriding toString method to print the list in a format
-     * @return - list
+     * @return - list of contacts with details
      */
-
     @Override
     public String toString() {
-        return "Contact{" +
-                "firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", address='" + address + '\'' +
-                ", city='" + city + '\'' +
-                ", state='" + state + '\'' +
-                ", zip=" + zip +
-                ", phoneNumber=" + phoneNumber +
-                ", email='" + email + '\'' +
-                '}';
+        return  "\tFirstName: " + firstName + '\n' +
+                "\tLastName: " + lastName + '\n' +
+                "\tAddress: " + address + '\n' +
+                "\tCity: " + city + '\n' +
+                "\tState: " + state + '\n' +
+                "\tZip: " + zip + '\n' +
+                "\tPhoneNumber: " + phoneNumber + '\n' +
+                "\tEmail: " + email + '\n' ;
     }
 }
