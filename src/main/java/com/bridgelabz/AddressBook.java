@@ -8,12 +8,19 @@ package com.bridgelabz;
  * Ability to sort the entries in the address book by City, State, or Zip
  * Ability to Read or Write the Address Book with Persons Contact into a File using File IO
  * Ability to Read or Write the Address Book with Persons Contact into a CSV File
+ * Ability to Read or Write the Address Book with Persons Contact into a JSON File
  */
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.opencsv.*;
 import com.opencsv.exceptions.CsvException;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class AddressBook {
@@ -93,6 +100,7 @@ public class AddressBook {
         }
         System.out.println("Contact has been saved successfully to a file");
         bufferedWriter.flush();
+        bufferedWriter.close();
     }
 
     /**
@@ -144,6 +152,7 @@ public class AddressBook {
         System.out.println("Contact has been saved successfully to CSV file");
         csvWriter.writeAll(list);
         csvWriter.close();
+        fileWriter.close();
     }
 
     /**
@@ -164,8 +173,62 @@ public class AddressBook {
                 System.out.println(contact + "\t");
             }
         }
+        csvReader.close();
+        fileReader.close();
     }
 
+    /**
+     * Creating writeContactsToJSONFile to write the person's contact details to a JSON file
+     * @throws IOException
+     */
+    public static void writeContactsToJSONFile() throws IOException {
+        JsonObject jsonObject = new JsonObject();
+        JsonObject jsonObject1 = null;
+        JsonArray jsonArray = null;
+        File file = new File("AddressBookJson.json");
+        file.createNewFile();
+        FileWriter fileWriter = new FileWriter(file);
+        for (Map.Entry<String, List<Contact>> entry : addressBook.entrySet()) {
+            jsonArray = new JsonArray();
+            for(Contact contact : entry.getValue()) {
+                jsonObject1 = new JsonObject();
+                jsonObject1.addProperty("First Name", contact.getFirstName());
+                jsonObject1.addProperty("Last Name", contact.getLastName());
+                jsonObject1.addProperty("Address", contact.getAddress());
+                jsonObject1.addProperty("City", contact.getCity());
+                jsonObject1.addProperty("State", contact.getState());
+                jsonObject1.addProperty("Zip", contact.getZip());
+                jsonObject1.addProperty("Phone Number", contact.getPhoneNumber());
+                jsonObject1.addProperty("Email", contact.getEmail());
+                jsonArray.add(jsonObject1);
+            }
+            jsonObject.add(entry.getKey(), jsonArray);
+        }
+        fileWriter.write(jsonObject.toString());
+        fileWriter.flush();
+        fileWriter.close();
+    }
+
+    /**
+     * This method is created to read the json file and print the data
+     */
+    public static void readContactsFromJSONFile() {
+        JsonParser parser = null;
+        try {
+            Gson gson = new Gson();
+            Reader reader = Files.newBufferedReader(Paths.get("AddressBookJson.json"));
+
+            Map<String, List<Contact>> map = gson.fromJson(reader, Map.class);
+
+            for (Map.Entry<String, List<Contact>> entry : map.entrySet()) {
+                System.out.println(entry.getKey() + "=" + entry.getValue());
+            }
+
+            reader.close();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
         /**
          * Main method to perform modifications
          * @param args - default java param
@@ -192,7 +255,7 @@ public class AddressBook {
                 "4. Delete contact \n5. Search Contact \n6. View Contact \n7. CountNumberOfContacts \n" +
                 "8. Sort Address Book by Name \n9. Sort Address Book By City State Or Zip \n" +
                 "10. Write Contacts To File \n11. Read Contacts From File \n12. Write Contacts To CSVFile \n" +
-                "13. Read Contacts From CSVFile");
+                "13. Read Contacts From CSVFile\n14. Write Contacts To JSONFile\n15. Read Contacts From JSONFile");
         int userChoice = scanner.nextInt();
         switch (userChoice) {
             case 1:
@@ -235,6 +298,11 @@ public class AddressBook {
             case 13:
                 readContactsFromCSVFile();
                 break;
+            case 14:
+                writeContactsToJSONFile();
+                break;
+            case 15:
+                readContactsFromJSONFile();
             default:
                 System.out.println("Invalid option. Please select valid");
         }
